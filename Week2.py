@@ -21,7 +21,7 @@ rad_bh = ac.G * au.solMass / ac.c ** 2
 print(f"Schwarzschild radius of a solar-mass blackhole: {rad_bh.si}\n")
 
 #Path data will be loaded in from
-path = '/Users/jdblack/Code/Python/Astronomy/ASTRON1221/DarkMatter/galaxy_rotation_2006.txt'
+path = 'galaxy_rotation_2006.txt'
 table = aio.read(path)
 print(f"Loaded file from {path}\n Loaded data:\n")
 print(table)
