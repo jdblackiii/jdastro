@@ -14,6 +14,7 @@ vol = table["col3"]
 
 #Constants
 mass_blackhole = 3e7 * au.solMass
+mass_bulge = 3e10 * au.solMass
 
 #Create initial chart from input data, set labels
 plt.plot(dis, vol)
@@ -21,18 +22,20 @@ plt.xlabel("Distance (kp/c)")
 plt.ylabel("Velocity (km/s)")
 
 #Calculates orbital velocity given Mass and Radius
-def calculate_orbital_velocity(M, r):
-    ret_val = np.sqrt((ac.G * M) / r)
+def calculate_orbital_velocity(M, dis):
+    ret_val = np.zeros(np.shape(dis)) * au.km / au.s
+    
+    for i, radius in enumerate(dis):
+        radius_with_units = radius * 1000 * au.parsec
+        orb_velocity = np.sqrt((ac.G * M) / radius_with_units)
+        print(f'The orbital velocity at radius {radius} is {orb_velocity.to(au.km / au.s)}')
+        ret_val[i] = orb_velocity
     return ret_val
 
-vel_ret = np.zeros(np.shape(dis)) * au.km / au.s
+#Calculate orbital velocity of blockhole 
 
-for i, radius in enumerate(dis):
-    radius_with_units = radius * 1000 * au.parsec
-    orb_velocity = calculate_orbital_velocity(mass_blackhole, radius_with_units)
-    print(f'The orbital velocity at radius {radius} is {orb_velocity.to(au.km / au.s)}')
-    vel_ret[i] = orb_velocity
 
 #Plot black hole data
-plt.plot(vel_ret, color = 'red', label = 'With only Supermassive Black Hole')
+plt.plot(calculate_orbital_velocity(mass_blackhole, dis), color = 'red', label = 'With only Supermassive Black Hole')
+plt.plot(calculate_orbital_velocity(mass_bulge, dis), color = 'purple', label = 'With only Supermassive Black Hole')
 plt.show()
