@@ -10,14 +10,14 @@ table = aio.read(path)
 print(f"Loaded file from {path}\n Loaded data:\n")
 print(table)
 dis = table["col2"]
-vol = table["col3"]
+vel = table["col3"]
 
 #Constants
 mass_blackhole = 3e7 * au.solMass
 mass_bulge = 3e10 * au.solMass
 
 #Create initial chart from input data, set labels
-plt.plot(dis, vol)
+plt.plot(dis, vel)
 plt.xlabel("Distance (kp/c)")
 plt.ylabel("Velocity (km/s)")
 
@@ -36,6 +36,7 @@ def calculate_orbital_velocity(M, dis):
 
 
 #Plot black hole data
-plt.plot(calculate_orbital_velocity(mass_blackhole, dis), color = 'red', label = 'With only Supermassive Black Hole')
-plt.plot(calculate_orbital_velocity(mass_bulge, dis), color = 'purple', label = 'With only Supermassive Black Hole')
+plt.plot(np.arange(7,35), calculate_orbital_velocity(mass_blackhole, dis), color = 'red', label = 'With only Supermassive Black Hole')
+plt.plot(np.arange(7,35), calculate_orbital_velocity(mass_bulge, dis), color = 'purple', label = '')
+plt.xlim(left = 7)
 plt.show()
