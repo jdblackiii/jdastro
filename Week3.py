@@ -32,11 +32,11 @@ def calculate_orbital_velocity(M, dis):
         ret_val[i] = orb_velocity
     return ret_val
 
-#Calculate orbital velocity of blockhole 
-
-
-#Plot black hole data
+#Calculate and plot Black Hole
 plt.plot(np.arange(7,35), calculate_orbital_velocity(mass_blackhole, dis), color = 'red', label = 'With only Supermassive Black Hole')
-plt.plot(np.arange(7,35), calculate_orbital_velocity(mass_bulge, dis), color = 'purple', label = '')
+
+#Calculate and plot Central Bulge
+plt.plot(np.arange(7,35), calculate_orbital_velocity(mass_bulge, dis), color = 'purple', label = 'With entire central bulge')
+
 plt.xlim(left = 7)
 plt.show()
