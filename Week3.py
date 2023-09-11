@@ -15,6 +15,8 @@ vel = table["col3"]
 #Constants
 mass_blackhole = 3e7 * au.solMass
 mass_bulge = 3e10 * au.solMass
+mass_disk = 5.6e10 * au.solMass
+mass_halo = 1.4e10 * au.solMass
 
 #Create initial chart from input data, set labels
 plt.plot(dis, vel)
@@ -36,7 +38,13 @@ def calculate_orbital_velocity(M, dis):
 plt.plot(np.arange(7,35), calculate_orbital_velocity(mass_blackhole, dis), color = 'red', label = 'With only Supermassive Black Hole')
 
 #Calculate and plot Central Bulge
-plt.plot(np.arange(7,35), calculate_orbital_velocity(mass_bulge, dis), color = 'purple', label = 'With entire central bulge')
+plt.plot(np.arange(7,35), calculate_orbital_velocity(mass_bulge, dis), color = 'purple', label = 'Mass of entire central bulge')
+
+#Calculate and plot Disk
+plt.plot(np.arange(7,35), calculate_orbital_velocity(mass_disk, dis), color = 'green', label = 'Mass of entire disk')
+
+#Calculate and plot halo
+plt.plot(np.arange(7,35), calculate_orbital_velocity(mass_halo, dis), color = 'blue', label = 'Mass of entire halo')
 
 plt.xlim(left = 7)
 plt.show()
