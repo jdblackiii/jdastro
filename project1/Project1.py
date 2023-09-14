@@ -16,10 +16,10 @@ vel = table["col3"] * au.km / au.s
 mass_blackhole = 3e7 * au.solMass
 mass_bulge = 2.3e10 * au.solMass
 mass_disk = 2.3e11 * au.solMass
-mass_halo = 1.1e11 * au.solMass
+mass_halo = 3.4e11 * au.solMass
 
 radius_disk = 35 * 1000 * au.parsec
-radius_halo = 50e3 * au.parsec
+radius_halo = 35 * 1000 * au.parsec
 
 #Create initial chart from input data, set labels
 plt.plot(dis, vel)
@@ -35,7 +35,7 @@ def calculate_orbital_velocity(M, dis, structure_type='point'):
             M_effective = M * (radius / radius_disk)**2
         elif structure_type == 'halo':
             # Adjusting the halo's mass distribution assumption
-            M_effective = M * (radius / radius_halo)**2
+            M_effective = M * (radius / radius_halo)**3
         else:
             # For point masses like black hole and bulge
             M_effective = M
