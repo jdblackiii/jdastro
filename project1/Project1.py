@@ -48,16 +48,28 @@ def calculate_orbital_velocity(M, dis, structure_type='point'):
 plt.plot(dis, vel, color='orange', label='Provided data')
 
 #Calculate and plot Black Hole
-plt.plot(dis, calculate_orbital_velocity(mass_blackhole, dis, 'point'), color='red', label='With only Supermassive Black Hole')
+black_hole_vels = calculate_orbital_velocity(mass_blackhole, dis, 'point').value
+plt.plot(dis, black_hole_vels, color='red', label='Mass of central black hole')
 
 #Calculate and plot Central Bulge
-plt.plot(dis, calculate_orbital_velocity(mass_bulge, dis, 'point'), color='purple', label='Mass of entire central bulge')
+bulge_vels = calculate_orbital_velocity(mass_bulge, dis, 'point').value
+plt.plot(dis, bulge_vels, color='purple', label='Mass of central bulge')
 
 #Calculate and plot Disk
-plt.plot(dis, calculate_orbital_velocity(mass_disk, dis, 'disk'), color='green', label='Mass of entire disk')
+disk_vels = calculate_orbital_velocity(mass_disk, dis, 'disk').value
+plt.plot(dis, disk_vels, color='green', label='Mass of disk')
 
 #Calculate and plot halo
-plt.plot(dis, calculate_orbital_velocity(mass_halo, dis, 'halo'), color='blue', label='Mass of entire halo')
+halo_vels = calculate_orbital_velocity(mass_halo, dis, 'halo').value
+plt.plot(dis, halo_vels, color='blue', label='Mass of halo')
+
+#Sum values across all velocity lists
+#Combine all lists with zip, then add element wise with list comprehension
+sum_vels = [sum(x) for x in zip(black_hole_vels, bulge_vels, disk_vels)]
+print(sum_vels)
+print(black_hole_vels)
+
+plt.plot(dis, sum_vels, color='blue', label='Mass of all components')
 
 
 plt.xlim(left=7e3)  # Assuming you want to start from 7 kpc
