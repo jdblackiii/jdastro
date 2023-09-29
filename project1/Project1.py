@@ -4,6 +4,21 @@ import astropy.units as au
 import astropy.io.ascii as aio
 import matplotlib.pyplot as plt
 
+plt.rcParams.update({
+    "lines.color": "white",
+    "patch.edgecolor": "white",
+    "text.color": "black",
+    "axes.facecolor": "white",
+    "axes.edgecolor": "lightgray",
+    "axes.labelcolor": "white",
+    "xtick.color": "white",
+    "ytick.color": "white",
+    "grid.color": "lightgray",
+    "figure.facecolor": "black",
+    "figure.edgecolor": "black",
+    "savefig.facecolor": "black",
+    "savefig.edgecolor": "black"})
+
 #Path data will be loaded in from
 path = 'galaxy_rotation_2006.txt'
 table = aio.read(path)
@@ -13,13 +28,14 @@ dis = table["col2"] * 1000 * au.parsec  # Assuming the data is in kpc, convertin
 vel = table["col3"] * au.km / au.s
 
 #Constants
+#Source https://www.aanda.org/articles/aa/full_html/2012/10/aa20065-12/T5.html
 mass_blackhole = 3e7 * au.solMass
-mass_bulge = 2.3e10 * au.solMass
-mass_disk = 2.3e11 * au.solMass
-mass_halo = 3.4e11 * au.solMass
+mass_bulge = 4.4e10 * au.solMass
+mass_disk = 5.6e10 * au.solMass
+mass_halo = 1.3e12 * au.solMass
 
-radius_disk = 35 * 1000 * au.parsec
-radius_halo = 35 * 1000 * au.parsec
+radius_disk = 200 * 1000 * au.parsec
+radius_halo = 200 * 1000 * au.parsec
 
 #Create initial chart from input data, set labels
 plt.plot(dis, vel)
@@ -47,31 +63,37 @@ def calculate_orbital_velocity(M, dis, structure_type='point'):
 #Plot provided data
 plt.plot(dis, vel, color='orange', label='Provided data')
 
+
 #Calculate and plot Black Hole
 black_hole_vels = calculate_orbital_velocity(mass_blackhole, dis, 'point').value
-plt.plot(dis, black_hole_vels, color='red', label='Mass of central black hole')
+plt.plot(dis, black_hole_vels, color='red', label='Central black hole')
 
 #Calculate and plot Central Bulge
 bulge_vels = calculate_orbital_velocity(mass_bulge, dis, 'point').value
-plt.plot(dis, bulge_vels, color='purple', label='Mass of central bulge')
+plt.plot(dis, bulge_vels, color='purple', label='Central bulge')
 
 #Calculate and plot Disk
 disk_vels = calculate_orbital_velocity(mass_disk, dis, 'disk').value
-plt.plot(dis, disk_vels, color='green', label='Mass of disk')
+plt.plot(dis, disk_vels, color='green', label='Disk')
 
 #Calculate and plot halo
 halo_vels = calculate_orbital_velocity(mass_halo, dis, 'halo').value
-plt.plot(dis, halo_vels, color='blue', label='Mass of halo')
+plt.plot(dis, halo_vels, color='blue', label='Dark Matter Halo')
+
 
 #Sum values across all velocity lists
 #Combine all lists with zip, then add element wise with list comprehension
-sum_vels = [sum(x) for x in zip(black_hole_vels, bulge_vels, disk_vels)]
+sum_vels = [sum(x) for x in zip(black_hole_vels, bulge_vels, disk_vels, halo_vels)]
 print(sum_vels)
-print(black_hole_vels)
+#print(black_hole_vels)
 
-plt.plot(dis, sum_vels, color='blue', label='Mass of all components')
+#sum_no_halo = [sum(x) for x in zip(black_hole_vels, bulge_vels, disk_vels)]
+
+plt.plot(dis, sum_vels, color='black', label='Combined velocity')
+
+#plt.plot(dis, sum_no_halo, color='red', label='Mass without dark matter halo')
 
 
-plt.xlim(left=7e3)  # Assuming you want to start from 7 kpc
+#plt.xlim()  # Assuming you want to start from 7 kpc
 plt.legend()
 plt.show()
