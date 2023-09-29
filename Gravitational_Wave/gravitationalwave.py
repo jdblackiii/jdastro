@@ -21,33 +21,41 @@ t0 = 1126259462.4    # -- GW150914
 window = 32
 # t0 = 1187008882.4    # -- GW170817
 
-
+#Fetch LIGO data for [window] days around [t0]
 hdata = TimeSeries.fetch_open_data('H1', t0 - window, t0 + window)
 
 # Plot ASD
+# Fourier transform data and find strongest constituent frequencies 
 fig2 = hdata.asd(fftlength=8).plot()
 plt.xlim(10,2000)
 ymin = 1e-24
 ymax = 1e-19
 plt.ylim(ymin, ymax)
+
+# 60Hz is frequency of interference from North American electrical grid
+# We need to filter out these frequencies
 plt.vlines(60, ymin, ymax, linestyle="dashed", color="red")
 plt.vlines(120, ymin, ymax, linestyle="dashed", color="red")
 plt.vlines(180, ymin, ymax, linestyle="dashed", color="red")
 
-
+# We want to focus on the frequencies from 50 to 150
+# Create filter for area between these frequencies
 bp = filter_design.bandpass(50, 250, hdata.sample_rate)
 
+# Create filter with notches at 60, 120 and 180
 notches = [filter_design.notch(line, hdata.sample_rate) for
            line in (60, 120, 180)]
 
+# Merge filters
 zpk = filter_design.concatenate_zpks(bp, *notches)
 
+# Filter data
 hfilt = hdata.filter(zpk, filtfilt=True)
 
 hdata = hdata.crop(*hdata.span.contract(1))
 hfilt = hfilt.crop(*hfilt.span.contract(1))
 
-
+#Plot strain data from Hanford
 plot = Plot(hdata, hfilt, figsize=[12, 6], separate=True, sharex=True,
             color='gwpy:ligo-hanford')
 ax1, ax2 = plot.axes
@@ -60,13 +68,13 @@ ax2.text(1.0, 1.01, r'50-250\,Hz bandpass, notches at 60, 120, 180 Hz',
 plot.show()
 
 
-
+#Plot zoomed in data
 plot = hfilt.plot(color='gwpy:ligo-hanford')
 ax = plot.gca()
 ax.set_title('LIGO-Hanford strain data around GW150914')
 ax.set_ylabel('Amplitude [strain]')
-ax.set_xlim(1126259462, 1126259462.6)
-ax.set_xscale('seconds', epoch=1126259462)
+ax.set_xlim(t0 - .3, t0 +.3)
+ax.set_xscale('seconds', epoch = t0)
 plot.show()
 
 x_val = plt.gca().lines[0].get_xdata()
@@ -75,6 +83,7 @@ y_val = plt.gca().lines[0].get_ydata()
 ldata = TimeSeries.fetch_open_data('L1', 1126259446, 1126259478)
 lfilt = ldata.filter(zpk, filtfilt=True)
 
+# Adjust for time delay of gravitational wave travel between stations
 lfilt.shift('6.9ms')
 lfilt *= -1
 
@@ -83,14 +92,15 @@ ax = plot.gca()
 ax.plot(hfilt, label='LIGO-Hanford', color='gwpy:ligo-hanford')
 ax.plot(lfilt, label='LIGO-Livingston', color='gwpy:ligo-livingston')
 ax.set_title('LIGO strain data around GW150914')
-ax.set_xlim(1126259462, 1126259462.6)
-ax.set_xscale('seconds', epoch=1126259462)
+ax.set_xlim(t0 - .3, t0 +.3)
+ax.set_xscale('seconds', epoch = t0)
 ax.set_ylabel('Amplitude [strain]')
 ax.set_ylim(-1e-21, 1e-21)
 ax.legend()
 plot.show()
 
-"""https://colab.research.google.com/github/losc-tutorial/quickview/blob/master/index.ipynb
+"""
+https://colab.research.google.com/github/losc-tutorial/quickview/blob/master/index.ipynb
 Also from: https://gwpy.github.io/docs/stable/examples/signal/qscan/
 """
 
